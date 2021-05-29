@@ -1,5 +1,20 @@
 import React, { useState } from 'react'
 
+const Anecdote = ({ text, points }) => {
+  return (
+    <div>
+      <p>{text}</p>
+      <p>has {points} votes</p>
+    </div>
+  )
+}
+
+const Button = ({ text, onClick }) => {
+  return (
+    <button onClick={onClick}>{text}</button>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
@@ -17,20 +32,17 @@ const App = () => {
   return (
     <div>
       <h2>Anecdote of the day</h2>
-      {anecdotes[selected]}
-      <p>has {points[selected]} votes</p>
-      <br />
-      <button onClick={() => {
+      <Anecdote text={anecdotes[selected]} points={points[selected]} />
+      <Button text="vote" onClick={() => {
         const copy = [...points];
         copy[selected] += 1;
         setPoints(copy);
-      }}>Vote</button>
-      <button onClick={() => {
+      }} />
+      <Button text="Next Anecdote" onClick={() => {
         setSelected(Math.floor(Math.random() * anecdotes.length));
-      }}>Next Anecdote</button>
+      }} />
       <h2>Anecdote with the most votes</h2>
-      {anecdotes[points.indexOf(maxVotes)]}
-      <p>has {maxVotes} votes</p>
+      {maxVotes > 0 ? <Anecdote text={anecdotes[points.indexOf(maxVotes)]} points={maxVotes} /> : <p>No anecdotes have more than 0 points</p>}
     </div>
   )
 }
