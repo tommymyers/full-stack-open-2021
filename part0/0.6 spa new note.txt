@@ -1,0 +1,8 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+browser-->server: {"content":"Test!","date":"2021-05-29T12:07:47.461Z"}
+server-->browser: {"message":"note created"}
+
+note over browser:
+new note added to state
+ReactJS re-renders notes
+end note
