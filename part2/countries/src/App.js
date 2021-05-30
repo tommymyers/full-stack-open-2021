@@ -28,7 +28,12 @@ const App = () => {
       <img src={country.flag} width={100} alt={`${country.name} flag`}></img>
     </div>
   } else if (filteredCountries.length < 10) {
-    searchResults = filteredCountries.map(country => <div key={country.name}>{country.name}</div>)
+    searchResults = filteredCountries.map(country =>
+      <div key={country.name}>
+        {country.name}
+        <button onClick={() => setSearchQuery(country.name)}>Show</button>
+      </div>
+    )
   }
 
   return (
