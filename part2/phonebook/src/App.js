@@ -1,5 +1,27 @@
 import React, { useState } from 'react'
 
+const Filter = ({ searchQuery, onSearchQueryChange }) => {
+  return <div>Search for: <input value={searchQuery} onChange={onSearchQueryChange} /></div>
+}
+
+const PersonForm = (props) => {
+  return (
+    <form onSubmit={props.onFormSubmit}>
+      <div>name: <input value={props.newName} onChange={props.newNameInputChange} /></div>
+      <div>number: <input value={props.newNumber} onChange={props.newNumberInputChange} /></div>
+      <div><button type="submit">add</button></div>
+    </form>
+  )
+}
+
+const People = ({ people }) => {
+  return people.map(person =>
+    <div key={person.name}>
+      {person.name} {person.number}
+    </div>
+  )
+}
+
 const App = () => {
   const defaultPersons = [
     { name: 'Arto Hellas', number: '040-123456' },
@@ -37,19 +59,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>Search for: <input value={searchQuery} onChange={searchQueryChange} /></div>
+      <Filter searchQuery={searchQuery} onSearchQueryChange={searchQueryChange} />
       <h3>Insert new:</h3>
-      <form onSubmit={onFormSubmit}>
-        <div>name: <input value={newName} onChange={newNameInputChange} /></div>
-        <div>number: <input value={newNumber} onChange={newNumberInputChange} /></div>
-        <div><button type="submit">add</button></div>
-      </form>
+      <PersonForm
+        onFormSubmit={onFormSubmit}
+        newName={newName}
+        newNumber={newNumber}
+        newNameInputChange={newNameInputChange}
+        newNumberInputChange={newNumberInputChange}
+      />
       <h2>Numbers</h2>
-      {filteredPersons.map(person =>
-        <div key={person.name}>
-          {person.name} {person.number}
-        </div>
-      )}
+      <People people={filteredPersons} />
     </div>
   )
 }
