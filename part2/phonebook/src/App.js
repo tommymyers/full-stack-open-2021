@@ -2,22 +2,19 @@ import React, { useState } from 'react'
 
 const App = () => {
   const defaultPersons = [
-    {
-      name: 'Arto Hellas',
-      number: '040-1234567'
-    }
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]
   const [persons, setPersons] = useState(defaultPersons)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const newNameInputChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const newNumberInputChange = (event) => {
-    setNewNumber(event.target.value)
-  }
+  const newNameInputChange = (event) => setNewName(event.target.value)
+  const newNumberInputChange = (event) => setNewNumber(event.target.value)
+  const searchQueryChange = (event) => setSearchQuery(event.target.value)
 
   const onFormSubmit = (event) => {
     event.preventDefault()
@@ -35,16 +32,20 @@ const App = () => {
     setNewNumber("")
   }
 
+  const filteredPersons = persons.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>Search for: <input value={searchQuery} onChange={searchQueryChange} /></div>
+      <h3>Insert new:</h3>
       <form onSubmit={onFormSubmit}>
         <div>name: <input value={newName} onChange={newNameInputChange} /></div>
         <div>number: <input value={newNumber} onChange={newNumberInputChange} /></div>
         <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person =>
+      {filteredPersons.map(person =>
         <div key={person.name}>
           {person.name} {person.number}
         </div>
