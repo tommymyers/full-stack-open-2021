@@ -17,7 +17,7 @@ const PersonForm = (props) => {
 
 const People = ({ people, onDeletePerson }) => {
   return people.map(person =>
-    <div key={person.name}>
+    <div key={person.id}>
       {person.name} {person.number} <button onClick={() => onDeletePerson(person)}>delete</button>
     </div>
   )
@@ -37,22 +37,29 @@ const App = () => {
 
   const onFormSubmit = (event) => {
     event.preventDefault()
-    const newPerson = {
-      name: newName,
-      number: newNumber
+
+    const person = persons.find(p => p.name === newName)
+    if (person) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old phone number with a new one?`)) {
+        personsService.update(person.id, { ...person, number: newNumber })
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id !== person.id ? p : updatedPerson))
+          })
+      }
+    } else {
+      // add to db
+      const newPerson = {
+        name: newName,
+        number: newNumber
+      }
+      personsService.add(newPerson)
+        .then(p => {
+          console.log(p)
+          setPersons([...persons, p])
+          setNewName("")
+          setNewNumber("")
+        })
     }
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to the phonebok`)
-      return
-    }
-    // add to db
-    personsService.add(newPerson)
-      .then(person => {
-        console.log(person)
-        setPersons([...persons, person])
-        setNewName("")
-        setNewNumber("")
-      })
   }
 
   const onDeletePerson = (person) => {
