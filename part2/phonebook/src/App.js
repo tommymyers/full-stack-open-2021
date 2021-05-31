@@ -15,10 +15,10 @@ const PersonForm = (props) => {
   )
 }
 
-const People = ({ people }) => {
+const People = ({ people, onDeletePerson }) => {
   return people.map(person =>
     <div key={person.name}>
-      {person.name} {person.number}
+      {person.name} {person.number} <button onClick={() => onDeletePerson(person)}>delete</button>
     </div>
   )
 }
@@ -47,15 +47,18 @@ const App = () => {
     }
     // add to db
     personsService.add(newPerson)
-    .then(person => {
-      console.log(person)
-      setPersons([...persons, person])
-      setNewName("")
-      setNewNumber("")
-    })
-    .catch(error => {
-      console.log(error)
-    })
+      .then(person => {
+        console.log(person)
+        setPersons([...persons, person])
+        setNewName("")
+        setNewNumber("")
+      })
+  }
+
+  const onDeletePerson = (person) => {
+    if (!window.confirm(`Are you sure you want to delete ${person.name}?`)) return
+    personsService.remove(person.id)
+    setPersons(persons.filter(p => p.id !== person.id))
   }
 
   const filteredPersons = persons.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -73,7 +76,7 @@ const App = () => {
         newNumberInputChange={newNumberInputChange}
       />
       <h2>Numbers</h2>
-      <People people={filteredPersons} />
+      <People people={filteredPersons} onDeletePerson={onDeletePerson} />
     </div>
   )
 }
