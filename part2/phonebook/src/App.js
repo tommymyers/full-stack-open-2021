@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import axios from "axios"
+import personsService from "./services/personsService"
 
 const Filter = ({ searchQuery, onSearchQueryChange }) => {
   return <div>Search for: <input value={searchQuery} onChange={onSearchQueryChange} /></div>
@@ -28,9 +28,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const hook = () => {
-    axios.get("http://127.0.0.1:3001/persons").then((response) => setPersons(response.data))
-  }
+  const hook = () => personsService.getAll().then((people) => setPersons(people))
   useEffect(hook, [])
 
   const newNameInputChange = (event) => setNewName(event.target.value)
@@ -43,14 +41,21 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    console.log(newPerson)
     if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already added to the phonebok`)
       return
     }
-    setPersons([...persons, newPerson])
-    setNewName("")
-    setNewNumber("")
+    // add to db
+    personsService.add(newPerson)
+    .then(person => {
+      console.log(person)
+      setPersons([...persons, person])
+      setNewName("")
+      setNewNumber("")
+    })
+    .catch(error => {
+      console.log(error)
+    })
   }
 
   const filteredPersons = persons.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
